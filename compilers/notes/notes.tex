@@ -242,7 +242,80 @@ Purpose of using a Meaning function is to:
 	\item change syntax without changing semantics (optimize)
 	\item Expressions do not have a 1:1 relationship with meanings. Generally N:1 (multiple ways to say/write the same thing)
 \end{itemize}
+\paragraph{Regular Expressions}
+\begin{itemize}
+	\item Keyword: "if" or "else" or "then" or ... $'if' + 'else' + 'then'$
+	\item Integer: non-empty string of digits: $'0' + '1' + '2' + '3' + '4' + '5' + '6' + '7' + '8' + '9'$, however can't be empty string so instead of digit $digit^*$ we can write this as $digit^+$
+	\item Identifier: strings of letters or digits starting with a letter, where letter = [a-zA-Z]. $letter(letter + digit)^*$
+	\item Whitespace: non-empty sequence of $(blanks/newlines/tabs)^+$
+\end{itemize}
+anyone1@cs.stanford.edu: $letter(letter + digit)^* + @ + letter^+ + . + letter^+ + . + letter^+$
+\paragraph{PASCAL}
+\begin{itemize}
+	\item digits = $digit^+$
+	\item optFraction = $('.'digits) + \epsilon $ where $\epsilon$ means empty set is valid
+	      \begin{itemize}
+		      \item ('.'digits)?
+	      \end{itemize}
+	\item optExponent = $('E' ('+' + '-' + \epsilon) digits) + \epsilon$
+	      \begin{itemize}
+		      \item ('E'('+'+'-')?digits)?
+	      \end{itemize}
+	\item number = $digits + optFraction + optExponent$
+\end{itemize}
+Question mark (?) means the aforementioned component is optional
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{lexicalSpec.png}
+	\caption{Regular Expression Notation}
+\end{figure}
+\paragraph{Given string s and regular expression r, is it in the language (L) of a regular expression?}
+$s \in \mathcal{L}(r)$?
+\paragraph{Lexical Specification:}
+\begin{enumerate}
+	\item Write a rexp for the lexemes of each token class
+	      \begin{itemize}
+		      \item Number: $digit^+$
+		      \item Keyword: $if | else | ...$
+		      \item Identifier: $letter(letter + digit)^*$
+		      \item OpenPar: $($
+		      \item ...
+	      \end{itemize}
+	\item Construct R, matching all lexemes for all tokens i.e $R = Keyword + Identifier + Number + OpenPar + ...$
+	\item Let input be $x_1 ... x_n$. For $1 <= i <= n$ find $x_1 ... x_n \in \mathcal{L}(R)$?
+	\item If success, then we know that $x_1 ... x_n \in \mathcal{L}(R_j)$ for some $j$
+	\item Remove $x_1 ... x_i$ from input and jump to step 3
+\end{enumerate}
+
+\begin{description}
+	\item[Maximal Munch:] when faced with a choice of two different prefixes for input of different length, always take the longer one
+\end{description}
+
+\begin{description}
+	\item[Ambiguous Class?]
+	      When there are multiple possible classes for a given token, use priority queue to determine which one to use.
+\end{description}
+
+\begin{description}
+	\item[No Rule Matches?]
+	      Match error (as base case when other things don't match) " all strings not in the lexicon"
+\end{description}
+
+\begin{description}
+	\item[What makes a good algorithm?] Requires only single pass over input, Few operations per character (table lookup)
+\end{description}
 \subsection{Finite Automata}
+A good implementation model for regular expressions where regular expressions are the specification and finite automata are the implementation.
+\begin{description}
+	\item[Finite Automata:]
+	      \begin{itemize}
+		      \item input alphabet $\Sigma$
+		      \item set of states $S$
+		      \item state start state $n$
+		      \item set of accepting states $F \subseteq S$
+		      \item set of transitions $state \rightarrow^{input} state$
+	      \end{itemize}
+\end{description}
 \subsection{RegEx to NFAs}
 \subsection{NFA to DFA}
 \subsection{Implementing Finite Automata}
